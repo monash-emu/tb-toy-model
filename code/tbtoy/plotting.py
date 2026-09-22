@@ -386,6 +386,117 @@ def plot_cumulative_outputs(cumulative_df, outputs: list, sc_names: dict, n_col:
     return fig
 
 
+"""
+    Scenario comparison for a single parameter set
+"""
+
+
+def plot_scenarios_single_params(scenario_outputs: dict, outputs: list, sc_names: dict, x_lim: tuple, n_col: int = 2):
+    """
+    Grid of scenario comparison panels for a single parameter set (no uncertainty).
+
+    Args:
+        scenario_outputs: scenario id to derived outputs mapping.
+        outputs: names of the outputs to plot.
+        sc_names: scenario id to display name mapping.
+        x_lim: time range to display.
+        n_col: number of columns in the figure grid.
+
+    Returns:
+        The figure.
+    """
+    n_row = ceil(len(outputs) / n_col)
+    fig, axes = plt.subplots(n_row, n_col, figsize=(5.4 * n_col, 3.6 * n_row), squeeze=False)
+    axes = axes.flatten()
+
+    for i, output in enumerate(outputs):
+        ax = axes[i]
+        for i_sc, (sc_id, derived_outputs) in enumerate(scenario_outputs.items()):
+            series = derived_outputs[output].loc[x_lim[0] : x_lim[1]]
+            ax.plot(
+                series.index,
+                series.values,
+                color=SC_COLOURS[i_sc % len(SC_COLOURS)],
+                label=sc_names.get(sc_id, sc_id),
+                zorder=10 - i_sc,
+            )
+        ax.set_ylabel(get_title(output))
+        ax.set_title(get_title(output), fontsize=11)
+        ax.xaxis.set_major_locator(mticker.MaxNLocator(integer=True))
+        ax.set_ylim(bottom=0.0)
+        ax.grid(alpha=0.3)
+
+    axes[0].legend(fontsize=8)
+    for j in range(len(outputs), len(axes)):
+        fig.delaxes(axes[j])
+
+    fig.tight_layout()
+    return fig
+
+
+def plot_diff_outputs_single_params(diff_df, output: str, sc_names: dict, ax=None):
+    """
+    Horizontal bar chart of scenario impact for a single parameter set.
+
+    Args:
+        diff_df: output of `calculate_diff_outputs_single_params`.
+        output: column of the difference DataFrame to display.
+        sc_names: scenario id to display name mapping.
+        ax: optional existing axis.
+
+    Returns:
+        The figure.
+    """
+    if ax is None:
+        _, ax = plt.subplots(figsize=(7, 0.6 * len(diff_df) + 1.5))
+
+    sc_ids = list(diff_df.index)
+    y_pos = np.arange(len(sc_ids))
+    ax.barh(y_pos, diff_df[output].values, color="tab:blue", alpha=0.7)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels([sc_names.get(sc, sc) for sc in sc_ids])
+    ax.invert_yaxis()
+    ax.set_xlabel(get_title(output))
+    ax.grid(alpha=0.3, axis="x")
+
+    return ax.get_figure()
+
+
+def plot_cumulative_outputs_single_params(cumulative_df, outputs: list, sc_names: dict, n_col: int = 2):
+    """
+    Bar charts of cumulative outputs by scenario, for a single parameter set.
+
+    Args:
+        cumulative_df: output of `calculate_cumulative_outputs_single_params`.
+        outputs: cumulative outputs to display.
+        sc_names: scenario id to display name mapping.
+        n_col: number of columns in the figure grid.
+
+    Returns:
+        The figure.
+    """
+    sc_ids = list(cumulative_df.index)
+    n_row = ceil(len(outputs) / n_col)
+    fig, axes = plt.subplots(n_row, n_col, figsize=(5.6 * n_col, 0.45 * len(sc_ids) * n_row + 2.0 * n_row), squeeze=False)
+    axes = axes.flatten()
+
+    y_pos = np.arange(len(sc_ids))
+    for i, output in enumerate(outputs):
+        ax = axes[i]
+        ax.barh(y_pos, cumulative_df[output].values, color="tab:green", alpha=0.7)
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels([sc_names.get(sc, sc) for sc in sc_ids], fontsize=8)
+        ax.invert_yaxis()
+        ax.set_title(get_title(output), fontsize=10)
+        ax.grid(alpha=0.3, axis="x")
+
+    for j in range(len(outputs), len(axes)):
+        fig.delaxes(axes[j])
+
+    fig.tight_layout()
+    return fig
+
+
 def visualise_mle_params(priors: dict, mle_params: dict, n_col: int = 4):
     """Show where the maximum likelihood estimates sit within their prior ranges."""
     param_names = [p for p in mle_params if p in priors]

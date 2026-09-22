@@ -17,6 +17,7 @@ from time import time
 import arviz as az
 import pandas as pd
 import pymc as pm
+import yaml
 
 from estival import priors as esp
 from estival import targets as est
@@ -26,7 +27,7 @@ from estival.wrappers import pymc as epm
 
 from tbtoy.config import DEFAULT_ANALYSIS_CONFIG, DEFAULT_MODEL_CONFIG
 from tbtoy.model import get_tb_model
-from tbtoy.paths import OUTPUT_PARENT_FOLDER, PARAMS_PATH, TARGETS_PATH, TV_PARAMS_PATH
+from tbtoy.paths import MLE_PARAMS_PATH, OUTPUT_PARENT_FOLDER, PARAMS_PATH, TARGETS_PATH, TV_PARAMS_PATH
 from tbtoy.scenarios import BASELINE
 
 # Outputs summarised when comparing scenarios against a reference scenario
@@ -212,6 +213,48 @@ def find_mle(bcm: BayesianCompartmentalModel, budget: int = 2000, opt_class=None
     return rec.value[1]
 
 
+def save_mle_params(mle_params: dict, path: Path = MLE_PARAMS_PATH) -> Path:
+    """Write a maximum likelihood parameter set to a YAML file."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w") as f:
+        yaml.safe_dump({name: float(value) for name, value in mle_params.items()}, f, sort_keys=False)
+    return path
+
+
+def load_mle_params(path: Path = MLE_PARAMS_PATH) -> dict:
+    """Read a maximum likelihood parameter set from a YAML file."""
+    with Path(path).open() as f:
+        return yaml.safe_load(f)
+
+
+def get_mle_params(
+    bcm: BayesianCompartmentalModel,
+    path: Path = MLE_PARAMS_PATH,
+    budget: int = 2000,
+    recalculate: bool = False,
+) -> dict:
+    """
+    Get the maximum likelihood parameters, reusing a saved set where available.
+
+    Args:
+        bcm: the Bayesian compartmental model (only used if optimisation is needed).
+        path: path to the saved parameter set.
+        budget: number of objective function evaluations, if optimising.
+        recalculate: optimise even if a saved parameter set exists.
+
+    Returns:
+        Dictionary of best-fitting parameter values.
+    """
+    path = Path(path)
+    if path.exists() and not recalculate:
+        return load_mle_params(path)
+
+    mle_params = find_mle(bcm, budget=budget)
+    save_mle_params(mle_params, path)
+    return mle_params
+
+
 def run_metropolis_calibration(
     bcm: BayesianCompartmentalModel,
     draws: int = 10000,
@@ -365,6 +408,63 @@ def calculate_cumulative_output_quantiles(
         )
 
     return pd.concat(frames, names=["scenario", "quantile"])
+
+
+def calculate_diff_outputs_single_params(
+    scenario_outputs: dict, ref_sc: str = "baseline", end_year: int = None
+) -> pd.DataFrame:
+    """
+    Health gains of each scenario relative to a reference scenario, for a single parameter set.
+
+    Args:
+        scenario_outputs: scenario id to derived outputs mapping (from `run_scenarios_single_params`).
+        ref_sc: reference scenario id.
+        end_year: year at which cumulative outputs are read (defaults to the last modelled year).
+
+    Returns:
+        DataFrame indexed by scenario, with absolute and relative differences.
+    """
+    ref_outputs = scenario_outputs[ref_sc]
+    end_year = ref_outputs.index.max() if end_year is None else end_year
+    ref_latest = ref_outputs.loc[end_year]
+
+    rows = {}
+    for sc_id, derived_outputs in scenario_outputs.items():
+        if sc_id == ref_sc:
+            continue
+        latest = derived_outputs.loc[end_year]
+        row = {}
+        for name, output in DIFF_OUTPUTS.items():
+            abs_diff = ref_latest[output] - latest[output]
+            row[name] = abs_diff
+            row[f"{name}_relative"] = abs_diff / ref_latest[output]
+        rows[sc_id] = row
+
+    return pd.DataFrame(rows).T.rename_axis("scenario")
+
+
+def calculate_cumulative_outputs_single_params(
+    scenario_outputs: dict, outputs: list = None, end_year: int = None
+) -> pd.DataFrame:
+    """
+    Cumulative outputs for each scenario, for a single parameter set.
+
+    Args:
+        scenario_outputs: scenario id to derived outputs mapping (from `run_scenarios_single_params`).
+        outputs: cumulative outputs to report.
+        end_year: year at which cumulative outputs are read (defaults to the last modelled year).
+
+    Returns:
+        DataFrame indexed by scenario, with one column per output.
+    """
+    outputs = CUMULATIVE_OUTPUTS if outputs is None else outputs
+
+    rows = {}
+    for sc_id, derived_outputs in scenario_outputs.items():
+        end = derived_outputs.index.max() if end_year is None else end_year
+        rows[sc_id] = derived_outputs.loc[end, outputs]
+
+    return pd.DataFrame(rows).T.rename_axis("scenario")
 
 
 """

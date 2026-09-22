@@ -1,41 +1,41 @@
 parameter,value,distribution,distri_param1,distri_param2,description,unit
-raw_transmission_rate,0.000117,uniform,0.00002,0.005,Effective rate of transmission (before adjustment for infectiousness),/year
-infection_pop_scale,0.7,uniform,0.0,1.0,Population-size exponent in the force of infection - from density-dependent (0) to frequency-dependent (1) transmission,
+raw_transmission_rate,0.000117,uniform,0.00001,0.001,Effective rate of transmission (before adjustment for infectiousness),/year
+infection_pop_scale,1,,,,Population-size exponent in the force of infection - from density-dependent (0) to frequency-dependent (1) transmission,
 rel_sus_contained,0.324,uniform,0.2,0.5,Relative risk of reinfection from the 'contained' compartment (ref. 'mtb_naive'),
-rel_sus_cleared,0.858,uniform,0.5,1.0,Relative risk of reinfection from the 'cleared' and 'recovered' compartments (ref. 'mtb_naive'),
+rel_sus_cleared,0.858,uniform,0.5,1,Relative risk of reinfection from the 'cleared' and 'recovered' compartments (ref. 'mtb_naive'),
 rel_infectiousness_subclin,0.5,,,,Relative infectiousness of asymptomatic TB (ref. symptomatic TB),
 rel_infectiousness_lowinf,0.4,,,,Relative infectiousness of 'less infectious' TB (ref. 'more infectious' TB),
-containment_rate,2.0,,,,Rate of transition from 'incipient' to 'contained',/year
+containment_rate,2,,,,Rate of transition from 'incipient' to 'contained',/year
 progression_rate,0.1,,,,Rate of progression from 'incipient' to TB disease,/year
 progression_prop_infectious,0.5,,,,Proportion of incident TB that is 'more infectious',
-breakdown_rate,0.248,uniform,0.01,1.0,Rate of transition from 'contained' back to 'incipient',/year
+breakdown_rate,0.248,uniform,0.01,1,Rate of transition from 'contained' back to 'incipient',/year
 clearance_rate,0.047,uniform,0.01,0.1,Rate of transition from 'contained' to 'cleared',/year
-clinical_progression_rate,3.13,uniform,0.5,5.0,Rate of progression from asymptomatic to symptomatic TB,/year
-clinical_regression_rate,1.0,,,,Rate of regression from symptomatic to asymptomatic TB,/year
-infectiousness_gain_rate,4.82,uniform,0.5,10.0,Rate of progression from 'less infectious' to 'more infectious' TB,/year
-infectiousness_loss_rate,1.0,,,,Rate of regression from 'more infectious' to 'less infectious' TB,/year
+clinical_progression_rate,3.13,uniform,0.5,5,Rate of progression from asymptomatic to symptomatic TB,/year
+clinical_regression_rate,1,,,,Rate of regression from symptomatic to asymptomatic TB,/year
+infectiousness_gain_rate,4.82,uniform,0.5,10,Rate of progression from 'less infectious' to 'more infectious' TB,/year
+infectiousness_loss_rate,1,,,,Rate of regression from 'more infectious' to 'less infectious' TB,/year
 self_recovery_rate,0.4,,,,Rate of self-recovery from asymptomatic TB,/year
 tb_mortality_rate_inf,0.389,,,,Rate of TB mortality for 'more infectious' symptomatic disease,/year
 tb_mortality_rate_lowinf,0.025,,,,Rate of TB mortality for 'less infectious' symptomatic disease,/year
-recent_detection_rate,2.89,uniform,0.1,5.0,Annual rate of passive TB detection at the passive-detection reference year,/year
-rel_detection_subclin,0.0,,,,Relative passive detection rate of asymptomatic TB (ref. symptomatic TB),
-passive_detection_inflection,2004.0,uniform,1980.0,2015.0,Inflection year of the historical passive detection scale-up profile,year
+recent_detection_rate,2.89,uniform,0.1,5,Annual rate of passive TB detection at the passive-detection reference year,/year
+rel_detection_subclin,0,,,,Relative passive detection rate of asymptomatic TB (ref. symptomatic TB),
+passive_detection_inflection,2004,uniform,1980,2015,Inflection year of the historical passive detection scale-up profile,year
 passive_detection_shape,0.15,,,,Shape (steepness) parameter of the historical passive detection scale-up profile,
-passive_detection_past_frac,0.736,uniform,0.2,1.0,Historical passive detection rate as a fraction of the current one,
+passive_detection_past_frac,0.736,uniform,0.2,1,Historical passive detection rate as a fraction of the current one,
 tx_duration,0.5,,,,Average duration of TB treatment,year
-pct_neg_tx_death,40.0,,,,Percentage of deaths among unsuccessful TB treatment outcomes,%
-future_detection_rate_rel,1.0,,,,Future passive detection rate relative to the current one (scenario lever),
+pct_neg_tx_death,40,,,,Percentage of deaths among unsuccessful TB treatment outcomes,%
+future_detection_rate_rel,1,,,,Future passive detection rate relative to the current one (scenario lever),
 future_tx_success_prop,0.88,,,,Future TB treatment success proportion (scenario lever),
-tpt_completion_perc,70.0,,,,Percentage of TST-positive individuals who start and complete preventive therapy,%
+tpt_completion_perc,70,,,,Percentage of TST-positive individuals who start and complete preventive therapy,%
 cxr_positivity_prop,0.1,,,,Proportion of people screened with CXR whose CXR is abnormal and therefore require a confirmatory Xpert test,
-prev_se_subclin_lowinf_ssx,0.0,,,,Probability of symptom-screen positivity for asymptomatic / less infectious TB,
-prev_se_subclin_inf_ssx,0.0,,,,Probability of symptom-screen positivity for asymptomatic / more infectious TB,
-prev_se_clin_lowinf_ssx,1.0,,,,Probability of symptom-screen positivity for symptomatic / less infectious TB,
-prev_se_clin_inf_ssx,1.0,,,,Probability of symptom-screen positivity for symptomatic / more infectious TB,
+prev_se_subclin_lowinf_ssx,0,,,,Probability of symptom-screen positivity for asymptomatic / less infectious TB,
+prev_se_subclin_inf_ssx,0,,,,Probability of symptom-screen positivity for asymptomatic / more infectious TB,
+prev_se_clin_lowinf_ssx,1,,,,Probability of symptom-screen positivity for symptomatic / less infectious TB,
+prev_se_clin_inf_ssx,1,,,,Probability of symptom-screen positivity for symptomatic / more infectious TB,
 prev_se_subclin_lowinf_cxr,0.256,uniform,0.07,0.52,Probability of CXR positivity for asymptomatic / less infectious TB,
 prev_se_subclin_inf_cxr,0.864,uniform,0.72,0.93,Probability of CXR positivity for asymptomatic / more infectious TB,
-prev_se_clin_lowinf_cxr,1.0,,,,Probability of CXR positivity for symptomatic / less infectious TB,
-prev_se_clin_inf_cxr,1.0,,,,Probability of CXR positivity for symptomatic / more infectious TB,
+prev_se_clin_lowinf_cxr,1,,,,Probability of CXR positivity for symptomatic / less infectious TB,
+prev_se_clin_inf_cxr,1,,,,Probability of CXR positivity for symptomatic / more infectious TB,
 prev_se_subclin_lowinf_xpert,0.5,,,,Probability of Xpert positivity for asymptomatic / less infectious TB,
 prev_se_subclin_inf_xpert,0.85,,,,Probability of Xpert positivity for asymptomatic / more infectious TB,
 prev_se_clin_lowinf_xpert,0.7,,,,Probability of Xpert positivity for symptomatic / less infectious TB,

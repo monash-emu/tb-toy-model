@@ -150,9 +150,10 @@ results = rt.run_scenarios_single_params(bcm_dict, params)
 2. **Set targets** — edit `data/calibration_targets.csv`. Each `(output, year)` row becomes part of a
    normal likelihood term, with `tol_perc` controlling its standard deviation.
 3. **Calibrate** — `notebooks/02_calibration.ipynb` finds a maximum likelihood estimate with
-   nevergrad, then samples the posterior with `DEMetropolisZ`.
-4. **Compare scenarios** — notebooks 03 and 04 run every scenario over posterior samples and
-   summarise burden averted and resource use.
+   nevergrad (saved to `outputs/calibration/mle_params.yml`), then samples the posterior with
+   `DEMetropolisZ`.
+4. **Compare scenarios** — notebooks 03 and 04 run every scenario once on that saved maximum
+   likelihood parameter set, and summarise burden averted and resource use.
 
 ## Notes and caveats
 
