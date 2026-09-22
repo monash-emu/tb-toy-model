@@ -1,0 +1,29 @@
+[project]
+authors = ["Monash EMU"]
+channels = ["conda-forge"]
+description = "A simplified (toy) tuberculosis transmission model for screening and programmatic scenario analysis"
+name = "tuberculosis_toy_model"
+platforms = ["win-64", "linux-64", "osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "3.10.*"
+pymc = "==5.2.0"
+pandas = ">=2.0,<3"
+matplotlib = ">=3.7,<4"
+seaborn = ">=0.13.2,<0.14"
+ipykernel = ">=7.1.0,<8"
+ipython = ">=8.37.0,<9"
+jupyter = ">=1.1.1,<2"
+pyyaml = ">=6.0.3,<7"
+pyarrow = ">=21.0.0,<22"
+pip = ">=26.2.1,<27"
+
+[pypi-dependencies]
+tbtoy = { path = "./code", editable = true }
+arviz = ">=0.21.0, <0.22"
+estival = { version = "==0.6.0a", extras = ["nevergrad"] }
+ipywidgets = ">=8.1.7, <9"
+summerepi2 = { git = "https://github.com/monash-emu/summer2gen.git" }

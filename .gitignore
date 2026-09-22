@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Environments
+.pixi/
+.venv/
+env/
+
+# Model outputs
+outputs/
+*.nc
+*.parquet
+
+# OS / editor
+.DS_Store
+.vscode/
