@@ -2,7 +2,7 @@
 authors = ["Monash EMU"]
 channels = ["conda-forge"]
 description = "A simplified (toy) tuberculosis transmission model for screening and programmatic scenario analysis"
-name = "tuberculosis_toy_model"
+name = "tb-toy-model"
 platforms = ["win-64", "linux-64", "osx-arm64"]
 version = "0.1.0"
 
